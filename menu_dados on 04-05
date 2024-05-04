@@ -1,0 +1,208 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include "../lib/estruturas.h"
+#include "../lib/funcoes_basicas.h"
+#include "../lib/stringToInt.h"
+
+int main(){
+    pLista lista = cria();
+    FILE* f;
+    f = fopen("file.txt", "a+"); // Abre o arquivo "file.txt" para escrita
+    if (f == NULL){
+        printf("Não foi possível abrir o arquivo.\n");
+        return 1;
+    }
+    int ID_doente = 1;
+    int len_resposta = 2;
+    char resposta[len_resposta];
+    printf("Que ação pretende efetuar?\n");
+    printf("->Introduzir dados de um novo doente [1]\n");
+    printf("->Eliminar um doente existente [2]\n");
+    printf("->Listar todos os doentes por ordem alfabética [3]\n");
+    printf("->Listar os doentes com tensões máximas acima de um determinado valor (por ordem decrescente das mesmas) [4]\n");
+    printf(" ->Apresentar toda a informação de um determinado doente [5]\n");
+    printf(" ->Registar as tensões, o peso e a altura de um determinado doente num determinado dia [6]\n");   
+    fgets(resposta, len_resposta, stdin);
+    int resposta_int = stringToInt(resposta);
+    getchar();
+    while(resposta_int!=7){
+        if(resposta_int == 1){
+        char nome[50];
+        char CC[50];
+        char phone[10];
+        char mail[40];
+        char dia_nascimento[3];
+        char mes_nascimento[3];
+        char ano_nascimento[5];
+ 
+        char ID_doente_str[4];
+        sprintf(ID_doente_str, "%d", ID_doente); // Converte o inteiro para uma string
+    
+        fprintf(f, "%s", ID_doente_str);
+
+        lista->doenteLista.ID = ID_doente;
+
+        if(f == NULL){
+            printf("Erro ao abrir o arquivo.");
+            return 1;
+        }
+
+        printf("Digite os dados pedidos:\nnome:");
+        fgets(nome,50,stdin);
+        int len_nome = strlen(nome);
+        if(nome[len_nome-1] == '\n'){
+            nome[len_nome-1] = '\0';
+        }
+        const char* nome_ptr = nome;
+        fprintf(f,"%s\n", nome_ptr); // Escreve a string no arquivo
+       
+        strcpy(lista->doenteLista.nome, nome);
+ 
+        printf("CC no formato 00000000-1-AA1:");
+        fgets(CC,50,stdin);
+        int len_CC =strlen(CC);
+        if(CC[len_CC-1] == '\n'){
+            CC[len_CC-1] = '\0';
+        }
+        while(CC[8]!='-' || CC[10]!='-'){
+            printf("Por favor insira o número de CC no formato 00000000-1-AA1:");
+            fgets(CC,50,stdin);
+        }
+
+        const char* CC_ptr = CC;
+        fprintf(f,"%s\n", CC_ptr); // Escreve a string no arquivo
+
+        strcpy(lista->doenteLista.CC, CC);
+
+        printf("número de telemóvel:");
+        fgets(phone,10,stdin);
+        int len_phone =strlen(phone);
+        if(phone[len_phone-1] == '\n'){
+            phone[len_phone-1] = '\0';
+        }
+        const char* phone_ptr = phone;
+        fprintf(f,"%s\n", phone_ptr); // Escreve a string no arquivo
+
+        int phone_int = stringToInt(phone);
+        getchar();
+        lista->doenteLista.phone = phone_int;
+
+        printf("e-mail:");
+        fgets(mail,40,stdin);
+        int len_mail = strlen(mail);
+        if(mail[len_mail-1] == '\n'){
+            mail[len_mail-1] = '\0';
+        }
+
+        const char* mail_ptr = mail;
+        fprintf(f,"%s\n", mail_ptr); // Escreve a string no arquivo
+
+        strcpy(lista->doenteLista.mail, mail);
+        
+        printf("Introduza a sua data de nascimento:\ndia:");
+
+        fgets(dia_nascimento,3,stdin);
+        int len_dia_nascimento = strlen(dia_nascimento);
+        if(dia_nascimento[len_dia_nascimento-1] == '\n'){
+            dia_nascimento[len_dia_nascimento-1] = '\0';
+        }
+        int dia_int = stringToInt(dia_nascimento);
+        getchar();
+        
+        lista->doenteLista.data_nascimento.dia = dia_int;
+
+        printf("mês:");
+        fgets(mes_nascimento,3,stdin);
+        int len_mes_nascimento = strlen(mes_nascimento);
+        if(mes_nascimento[len_mes_nascimento-1] == '\n'){
+            mes_nascimento[len_mes_nascimento-1] = '\0';
+        }
+        int mes_int = stringToInt(mes_nascimento);
+        getchar();
+        lista->doenteLista.data_nascimento.mes = mes_int;
+        
+        printf("ano:");
+        fgets(ano_nascimento,5,stdin);
+        int len_ano_nascimento = strlen(ano_nascimento);
+        if(ano_nascimento[len_ano_nascimento-1] == '\n'){
+           ano_nascimento[len_ano_nascimento-1] = '\0';
+        }
+        int ano_int = stringToInt(ano_nascimento);
+        lista->doenteLista.data_nascimento.ano = ano_int;
+
+        fprintf(f,"%s/%s/%s\n",dia_nascimento,mes_nascimento,ano_nascimento);
+
+        ID_doente++; //atualiza o ID do paciente
+
+        //introduzir dados de um novo cliente
+    }else if(resposta_int == 2){
+        //eliminar um doente existente
+        int len_ID_remover = 100;
+        char ID_remover[len_ID_remover];
+        printf("Qual o ID do doente que pretende eliminar:\n");
+        fgets(ID_remover, len_ID_remover, stdin);
+        int ID_remover_int = stringToInt(ID_remover);
+        elimina(lista, ID_remover_int);
+    }else if(resposta_int == 3){
+        //listar todos os doentes por ordem alfabetica
+    }else if(resposta_int == 4){
+        //listar todos os doentes com tensoes maximas acima de um determinado valor
+    }else if(resposta_int == 5){
+        //apresentar toda a informação de um determinado doente
+    }else if(resposta_int == 6){
+        printf("Pretende usar a data atual[1] ou adicionar a sua própria data[2]:\n");
+        fgets(resposta, len_resposta, stdin);
+        resposta_int = stringToInt(resposta);
+        if(resposta_int == 1){
+            time_t mytime;
+            mytime = time(NULL);
+            struct tm tm = *localtime(&mytime);
+            lista->doenteLista.data_nascimento.dia = tm.tm_mday;
+            lista->doenteLista.data_nascimento.mes = tm.tm_mon + 1;
+            lista->doenteLista.data_nascimento.ano = tm.tm_year + 1900;
+        }
+        else if(resposta_int == 2){
+            char dia[3];
+            char mes[3];
+            char ano[5];
+            printf("Introduza a sua data(escreva sempre dois dígitos para o dia e o mês):\n");
+
+            printf("dia:");
+            fgets(dia,3,stdin);
+            int len_dia = strlen(dia);
+            if(dia[len_dia-1] == '\n'){
+                dia[len_dia-1] = '\0';
+            }
+            int dia_int = stringToInt(dia);
+            lista->doenteLista.data_nascimento.dia = dia_int;
+
+            printf("mes:");
+            fgets(mes,3,stdin);
+            int len_mes = strlen(mes);
+            if(mes[len_mes-1] == '\n'){
+                mes[len_mes-1] = '\0';
+            }
+            int mes_int = stringToInt(mes);
+            lista->doenteLista.data_nascimento.mes = mes_int;
+            printf("ano:");
+            fgets(ano,5,stdin);
+            int len_ano = strlen(ano);
+            if(ano[len_ano-1] == '\n'){
+                ano[len_ano-1] = '\0';
+            }
+            int ano_int = stringToInt(ano);
+            lista->doenteLista.data_nascimento.ano = ano_int;
+            
+        }
+        int resultado = fclose(f);
+        if(resultado == 0){
+            printf("Arquivo fechado com sucesso.\n");
+        }else{
+            printf("Erro ao fechar arquivo.\n");
+        }
+        }
+    }
+    
+}
